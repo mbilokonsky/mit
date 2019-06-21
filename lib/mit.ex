@@ -4,7 +4,8 @@ defmodule Mit do
 	def open_jira() do open_url get_jira_url() end
 
 	def open_github(), do: open_github("origin")
-	def open_github(remote_name) do open_url get_github_url(remote_name) |> String.trim end
+	def open_github(remote_name), do: open_github(remote_name, get_branch())
+	def open_github(remote_name, branch) do open_url get_github_url(remote_name, branch) end
 
   def get_branch() do
 		{result, _exit_code} = System.cmd("git", ["status"])
@@ -33,9 +34,8 @@ defmodule Mit do
 		end
 	end
 
-	defp get_github_url(remote_name) do
+	defp get_github_url(remote_name, branch) do
 		url = get_url(remote_name) |> sanitize_origin
-		branch = get_branch()
 		case branch do
 			"master" -> url
 			branch -> url <> "/tree/" <> branch

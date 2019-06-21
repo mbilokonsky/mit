@@ -6,8 +6,9 @@ defmodule Mit.CLI do
 		long_description("Should work for either SSH or HTTPS urls. Optionally specify remote name, defaults to origin.")
 
 		argument :remote_name, default: "origin", required: false
+		argument :branch, default: nil, required: false
 		run context do
-      Mit.open_github(context.remote_name)
+      Mit.open_github(context.remote_name, context.branch)
     end
 	end
 
