@@ -5,7 +5,15 @@ defmodule Mit do
 
 	def open_github(), do: open_github("origin")
 	def open_github(remote_name), do: open_github(remote_name, get_branch())
-	def open_github(remote_name, branch) do open_url get_github_url(remote_name, branch) end
+	def open_github(nil, nil), do: open_github()
+	def open_github(nil, branch), do: open_github("origin", branch)
+	def open_github(remote_name, nil), do: open_github(remote_name)
+	def open_github(remote_name, branch) do
+		IO.puts("Opening github")
+		IO.puts("\tremote_name: #{remote_name}")
+		IO.puts("\tbranch: #{branch}")
+		open_url get_github_url(remote_name, branch)
+	end
 
   def get_branch() do
 		{result, _exit_code} = System.cmd("git", ["status"])
@@ -18,6 +26,7 @@ defmodule Mit do
 			branch
 		end)
 		|> Enum.join("")
+		|> String.trim
 	end
 
 	def get_url(remote_name) do
@@ -37,6 +46,7 @@ defmodule Mit do
 	defp get_github_url(remote_name, branch) do
 		url = get_url(remote_name) |> sanitize_origin
 		case branch do
+			nil -> :error
 			"master" -> url
 			branch -> url <> "/tree/" <> branch
 		end

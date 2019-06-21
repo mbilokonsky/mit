@@ -5,10 +5,11 @@ defmodule Mit.CLI do
 		description("Tries to open the browser to the github repo for the `origin` remote")
 		long_description("Should work for either SSH or HTTPS urls. Optionally specify remote name, defaults to origin.")
 
-		argument :remote_name, default: "origin", required: false
-		argument :branch, default: nil, required: false
+		option :remote, aliases: [:r], default: "origin", required: false
+		option :branch, aliases: [:b], default: nil, required: false
 		run context do
-      Mit.open_github(context.remote_name, context.branch)
+			IO.inspect context
+      Mit.open_github(context[:remote], context[:branch])
     end
 	end
 

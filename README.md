@@ -2,9 +2,9 @@
 
 Mit is tooling around git that augments the CLI with a few useful sub-commands.
 
- `mit open [remote_name=origin] [branch_name=get_current_branch()]` will open Safari to the github page for your current repo, and if you're on a branch other than master it'll take you to that branch. If you have multiple remotes configured you can pass the remote name in as an optional argument and it'll open that remote, instead of origin. Note that you'll get a 404 if the branch you're on locally doesn't exist on the target remote - so you can pass in the remote branch name, as well, if you'd like.
+`mit open [-r remote_name=master] [-b branch_name=get_current_branch()]` will open Safari to the github page for your current repo, and if you're on a branch other than master it'll take you to that branch. If you have multiple remotes configured you can pass the remote name in as an optional argument and it'll open that remote, instead of origin. Note that you'll get a 404 if the branch you're on locally doesn't exist on the target remote - so you can pass in the remote branch name, as well, if you'd like.
 
- `mit jira` is opinionated in that it requires you to name your branches after JIRA tickets, but if you do then running this in a project will open safari to that ticket. Note that you need to set up an environment variable for this to work: `$JIRA_TEAM`
+`mit jira` is opinionated in that it requires you to name your branches after JIRA tickets, but if you do then running this in a project will open safari to that ticket. Note that you need to set up an environment variable for this to work: `$JIRA_TEAM`
 
 The generated URL is: `https://$JIRA_TEAM.atlassian.net/browse/<current branch name>`
 
@@ -19,7 +19,7 @@ Uninstall it by running `bin/uninstall.sh` - it'll remove the `mit` application 
 ### What gets installed?
 
 * `./mit` -- this is the compiled executable that should be fully self-contained. Let me know if this works/doesn't work and whether or not you have elixir installed.
-* `scripts/git-open` -- this calls `mit open $1` for you, add it to your path and `git open` will work.
+* `scripts/git-open` -- this calls `mit open` for you, add it to your path and `git open` will work.
 * `scripts/git-jira` -- this calls `mit jira` for you, add it to your path and `git jira` will work.
 
 ### Manual Setup - prepackaged executable
