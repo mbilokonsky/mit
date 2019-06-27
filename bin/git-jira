@@ -1,1 +1,15 @@
-mit jira
+command="mit jira"
+args=""
+while getopts ":ct:u:" opt; do
+  case ${opt} in
+    c ) args="-c"
+      ;;
+    t ) args="-t $OPTARG"
+      ;;
+		u ) args="-u $OPTARG"
+		;;
+  esac
+done
+
+echo "Running command: $command $args"
+${command} ${args}

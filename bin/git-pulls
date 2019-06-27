@@ -1,0 +1,10 @@
+command="mit pulls"
+while getopts ":r:" opt; do
+  case ${opt} in
+    r ) command="$command -r $OPTARG"
+      ;;
+  esac
+done
+
+echo "Running command: $command"
+${command}

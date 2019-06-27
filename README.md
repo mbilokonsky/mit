@@ -6,6 +6,8 @@ Mit is tooling around git that augments the CLI with a few useful sub-commands.
 
 `mit jira` is opinionated in that it requires you to name your branches after JIRA tickets, but if you do then running this in a project will open safari to that ticket. Note that you need to set up an environment variable for this to work: `$JIRA_TEAM`
 
+`mit pulls` will open the pull requests page in the `upstream` remote of the current branch.
+
 The generated URL is: `https://$JIRA_TEAM.atlassian.net/browse/<current branch name>`
 
 ## Installation
