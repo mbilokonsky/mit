@@ -1,10 +1,15 @@
 command="mit pulls"
-while getopts ":r:" opt; do
+debug=false
+while getopts ":dr:" opt; do
   case ${opt} in
-    r ) command="$command -r $OPTARG"
+		d ) debug=true
+			;;
+		r ) command="$command -r $OPTARG"
       ;;
   esac
 done
 
-echo "Running command: $command"
+if [ $debug == true ]; then
+  echo "Running command: $command"
+fi
 ${command}

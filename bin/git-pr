@@ -1,0 +1,25 @@
+command="mit pr"
+debug=false
+while getopts ":dc:t:r:b:s:n:" opt; do
+  case ${opt} in
+		d ) debug=true
+			;;
+		c ) command="$command --body $OPTARG"
+      ;;
+		t ) command="$command --title $OPTARG"
+			;;
+		r ) command="$command --target_remote $OPTARG"
+			;;
+		b ) command="$command --target_branch $OPTARG"
+			;;
+		s ) command="$command --source_branch $OPTARG"
+			;;
+		n ) command="$command --source_remote $OPTARG"
+			;;
+  esac
+done
+
+if [ $debug == true ]; then
+  echo "Running command: $command $args"
+fi
+${command} ${args}

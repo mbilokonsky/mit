@@ -1,6 +1,9 @@
 command="mit open"
-while getopts ":r:b:" opt; do
+debug=false
+while getopts ":dr:b:" opt; do
   case ${opt} in
+		d ) debug=true
+			;;
     r ) command="$command -r $OPTARG"
       ;;
     b ) command="$command -b $OPTARG"
@@ -8,5 +11,7 @@ while getopts ":r:b:" opt; do
   esac
 done
 
-echo "Running command: $command"
+if [ $debug == true ]; then
+  echo "Running command: $command"
+fi
 ${command}

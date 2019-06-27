@@ -1,8 +1,13 @@
 command="mit jira"
 args=""
-while getopts ":ct:u:" opt; do
+debug=false
+while getopts ":xcdt:u:" opt; do
   case ${opt} in
-    c ) args="-c"
+    d ) debug=true
+			;;
+		x ) args="-x"
+			;;
+		c ) args="-c"
       ;;
     t ) args="-t $OPTARG"
       ;;
@@ -11,5 +16,8 @@ while getopts ":ct:u:" opt; do
   esac
 done
 
-echo "Running command: $command $args"
+if [ $debug == true ]; then
+  echo "Running command: $command $args"
+fi
+
 ${command} ${args}
