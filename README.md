@@ -8,8 +8,8 @@ Mit is tooling around git that augments the CLI with a few useful sub-commands.
 
 `mit pr` will link you to a page where you can create a pull request to merge your current branch into upstream master. All aspects of this are configurable using command line flags, though:
 
-1. `--body` optionally pre-populates the PR body for you. (if using shell scripts, `git pr -b "this is my body"`)
-2. `--title` optionally pre-populates the PR title for you. (if using shell scripts, `git pr -t "this is my title"`)
+1. `--body` optionally pre-populates the PR body for you. (not currently exposed through shell scripts)
+2. `--title` optionally pre-populates the PR title for you. (not currently exposed through shell scripts)
 3. `--source_branch` defaults to your current branch if not set. (if using shell scripts, `git pr -s my_branch`)
 4. `--source_remote` defaults to `"origin"` if not set. (if using shell scripts, `git pr -n my_remote_name`)
 5. `--target_branch` defaults to `"master"` if not set. (if using shell scripts, `git pr -b target_branch`)
