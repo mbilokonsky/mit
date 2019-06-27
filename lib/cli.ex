@@ -16,16 +16,25 @@ defmodule Mit.CLI do
 		description("tries to open the browser to the JIRA ticket for this branch")
 		long_description("(Assumes the branch name is equivalent to a JIRA ticket name)")
 
+		option :uninstall, aliases: [:x], type: :boolean, required: false
 		option :help, aliases: [:h], type: :boolean, required: false
 		option :clear_local_jira_url, aliases: [:c], type: :boolean, required: false
 		option :set_jira_template, aliases: [:t], type: :string, required: false
 		option :set_jira_url, aliases: [:u], type: :string, required: false
 
 		run context do
+			uninstall = context[:uninstall]
 			help = context[:help]
 			jira_template = context[:set_jira_template]
 			jira_url = context[:set_jira_url]
 			clear_local_jira_url = context[:clear_local_jira_url]
+
+			if uninstall do
+				IO.puts "Removing the `git jira` config data from this repository."
+				Mit.Jira.clean()
+				IO.puts "Done!"
+				exit :shutdown
+			end
 
 			if help do
 				IO.puts "Help for #{green("mit jira")} (or git jira if you've installed this to your local git config)"

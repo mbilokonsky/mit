@@ -1,5 +1,6 @@
 defmodule Mit.Jira do
-	@jira_key "mit.jira-url"
+	@jira_key "mit.jira.url"
+	@template_key "mit.jira.template"
 	@ticket_placeholder "@ticket@"
 
 	def get_jira_url() do
@@ -50,10 +51,6 @@ defmodule Mit.Jira do
 		@jira_key <> "." <> Mit.get_branch()
 	end
 
-	defp jira_template_key do
-		@jira_key <> "-template"
-	end
-
 	defp get_saved_jira_url() do
 		Mit.Config.read_from_local_env(construct_branch_jira_key())
 	end
@@ -70,7 +67,7 @@ defmodule Mit.Jira do
 		errors = validate_template_string(str)
 
 		case errors do
-			[] -> System.cmd("git", ["config", "--local", "--add", jira_template_key(), str])
+			[] -> System.cmd("git", ["config", "--local", "--add", @template_key, str])
 			[_h|_] -> IO.puts "Unable to set template URL due to the following errors:\n" <> Enum.join(errors, "\n")
 		end
 	end
@@ -107,7 +104,7 @@ defmodule Mit.Jira do
 	end
 
 	def get_jira_url_template do
-		system_output = System.cmd("git", ["config", "--local", "--get", jira_template_key()], stderr_to_stdout: true)
+		system_output = System.cmd("git", ["config", "--local", "--get", @template_key], stderr_to_stdout: true)
 		case system_output do
 			{_, x} when x != 0 -> nil
 			{"error: invalid key:" <> _, _} -> nil
@@ -117,7 +114,11 @@ defmodule Mit.Jira do
 		end
 	end
 
+	def clean do
+		System.cmd("git", ["config", "--remove-section", "mit.jira"])
+	end
+
 	defp format_template(url) do
-		String.replace(url, Mit.get_branch(), IO.ANSI.red <> Mit.get_branch() <> IO.ANSI.default_color)
+		String.replace(url, Mit.get_branch(), IO.ANSI.green <> Mit.get_branch() <> IO.ANSI.default_color)
 	end
 end
