@@ -15,7 +15,7 @@ defmodule Mit.Jira do
 	end
 
 	def clear_jira_url() do
-		Mit.Config.clear_key_from_local_env(@jira_key <> "." <> Mit.get_branch())
+		Mit.Config.clear_key_from_local_env construct_branch_jira_key()
 	end
 
 	defp require_jira_url() do
@@ -115,7 +115,8 @@ defmodule Mit.Jira do
 	end
 
 	def clean do
-		System.cmd("git", ["config", "--remove-section", "mit.jira"])
+		System.cmd("git", ["config", "--remove-section", ~r/mit\.jira?.*/])
+		:ok
 	end
 
 	defp format_template(url) do

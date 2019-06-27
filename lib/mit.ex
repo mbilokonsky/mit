@@ -1,4 +1,5 @@
 defmodule Mit do
+
 	def open_url({:error, errors}) do
 		IO.puts IO.ANSI.light_red_background <> "Unable to open jira url because of the following errors:" <> IO.ANSI.default_background
 		IO.puts "\t" <> Enum.join(errors, "\n\t")
@@ -34,13 +35,13 @@ defmodule Mit do
 		|> String.trim
 	end
 
-	def get_url(remote_name) do
+	def get_account_and_repo(remote_name) do
 		{result, _} = System.cmd("git", ["remote", "get-url", remote_name])
 		result |> sanitize_remote
 	end
 
 	defp get_github_url(remote_name, branch) do
-		url = get_url(remote_name)
+		url = get_account_and_repo(remote_name) |> build_github_url
 		case branch do
 			nil -> :error
 			"master" -> url
@@ -49,18 +50,22 @@ defmodule Mit do
 	end
 
 	defp get_github_pulls_url(remote_name) do
-		get_url(remote_name) <> "/pulls"
+		get_account_and_repo(remote_name) <> "/pulls"
 	end
 
-	defp sanitize_remote("www.github.com/" <> string) do "https://github.com/" <> string end
-	defp sanitize_remote("github.com/" <> string) do "https://github.com/" <> string end
-	defp sanitize_remote("http://" <> string) do "https://" <> string end
-	defp sanitize_remote("https://" <> string) do "https://" <> string end
-	defp sanitize_remote("ssh://" <> string), do: sanitize_remote(string)
-	defp sanitize_remote("git@github.com/" <> path), do: sanitize_remote(path)
-	defp sanitize_remote("git@github.com:" <> path), do: sanitize_remote(path)
-	defp sanitize_remote(path) do
+	def sanitize_remote("www.github.com/" <> string) do "https://github.com/" <> string end
+	def sanitize_remote("github.com/" <> string) do "https://github.com/" <> string end
+	def sanitize_remote("http://" <> string) do "https://" <> string end
+	def sanitize_remote("https://" <> string) do "https://" <> string end
+	def sanitize_remote("ssh://" <> string), do: sanitize_remote(string)
+	def sanitize_remote("git@github.com/" <> path), do: sanitize_remote(path)
+	def sanitize_remote("git@github.com:" <> path), do: sanitize_remote(path)
+	def sanitize_remote(path) do
 		[account_name, repo_name] = String.split(path, "/")
+		[account_name, repo_name]
+	end
+
+	def build_github_url([account_name, repo_name]) do
 		"https://github.com/#{account_name}/#{repo_name}" |> String.trim
 	end
 

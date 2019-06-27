@@ -32,24 +32,23 @@ defmodule Mit.CLI do
 			if uninstall do
 				IO.puts "Removing the `git jira` config data from this repository."
 				Mit.Jira.clean()
-				IO.puts "Done!"
 				exit :shutdown
 			end
 
 			if help do
 				IO.puts "Help for #{green("mit jira")} (or git jira if you've installed this to your local git config)"
 				IO.puts ""
-				IO.puts "- #{green("mit jira")} will open your browser to whatever location is stored in your project's configuration under the key #{blue("mit.jira_url.<branch_name>")}"
-				IO.puts "\tIf #{blue("mit.jira_url.<branch_name>")} is not set, #{green("mit jira")} will ask you to enter one. You should paste the URL to the ticket this branch represents."
+				IO.puts "- #{green("mit jira")} will open your browser to whatever location is stored in your project's configuration under the key #{blue("mit.jira.url.<branch_name>")}"
+				IO.puts "\tIf #{blue("mit.jira.url.<branch_name>")} is not set, #{green("mit jira")} will ask you to enter one. You should paste the URL to the ticket this branch represents."
 				IO.puts ""
-				IO.puts "- #{green("mit jira -c")} will clear the currently set jira url stored under #{blue("mit.jira_url.<branch_name>")}."
+				IO.puts "- #{green("mit jira -c")} will clear the currently set jira url stored under #{blue("mit.jira.url.<branch_name>")}."
 				IO.puts ""
-				IO.puts "- #{green("mit jira -u <url>")} will set the jira URL for this repo/branch under the git config name #{blue("mit.jira_url.<branch_name>")}."
+				IO.puts "- #{green("mit jira -u <url>")} will set the jira URL for this repo/branch under the git config name #{blue("mit.jira.url.<branch_name>")}."
 				IO.puts "\tThis must be a valid URL starting with http."
 				IO.puts ""
 				IO.puts "- #{green("mit jira -t <template>")} will store a JIRA URL Template on your project."
-				IO.puts "\tAny time you run #{green("mit jira")} in this project without having a #{blue("mit.jira_url.<branch_name>")} set it will suggest a url computed from this template."
-				IO.puts "\tA valid template is any URL containing the string '<TICKET>' in place of the actual ticket ID."
+				IO.puts "\tAny time you run #{green("mit jira")} in this project without having a #{blue("mit.jira.url.<branch_name>")} set it will suggest a url computed from this template."
+				IO.puts "\tA valid template is any URL containing the string '@ticket@' in place of the actual ticket ID."
 				exit :shutdown
 			end
 
@@ -74,6 +73,19 @@ defmodule Mit.CLI do
 
       Mit.open_jira()
     end
+	end
+
+	command :pr do
+		option :body, default: nil, required: false
+		option :title, default: nil, required: false
+		option :source_branch, default: nil, required: false
+		option :source_remote, default: "origin", required: true
+		option :target_branch, default: "master", required: true
+		option :target_remote, default: "upstream", required: true
+
+		run context do
+			Mit.PR.create_new_pr(context)
+		end
 	end
 
 	command :pulls do
