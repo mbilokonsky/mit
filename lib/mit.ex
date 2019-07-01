@@ -36,8 +36,9 @@ defmodule Mit do
 	end
 
 	def get_account_and_repo(remote_name) do
-		{result, _} = System.cmd("git", ["remote", "get-url", remote_name])
-		result |> sanitize_remote
+		{result, _} = System.cmd("git", ["remote", "get-url", remote_name |> String.trim])
+		remote_url = result |> String.trim
+		remote_url |> sanitize_remote
 	end
 
 	defp get_github_url(remote_name, branch) do
@@ -53,16 +54,20 @@ defmodule Mit do
 		get_account_and_repo(remote_name) <> "/pulls"
 	end
 
+	# Git allows many ways to specify a remote.
+	# The goal here is to try to strip away everything before `artsy/gravity` (including the `/`!)
+	# returns ["artsy", "gravity"] in the given example.
+	# Handles cases where remote is ssh, where it's http, where it's https, where it's not specified, etc etc etc.
 	def sanitize_remote("www.github.com/" <> string) do "https://github.com/" <> string end
 	def sanitize_remote("github.com/" <> string) do "https://github.com/" <> string end
 	def sanitize_remote("http://" <> string) do "https://" <> string end
-	def sanitize_remote("https://" <> string) do "https://" <> string end
+	def sanitize_remote("https://github.com/" <> string), do: sanitize_remote(string)
 	def sanitize_remote("ssh://" <> string), do: sanitize_remote(string)
 	def sanitize_remote("git@github.com/" <> path), do: sanitize_remote(path)
 	def sanitize_remote("git@github.com:" <> path), do: sanitize_remote(path)
 	def sanitize_remote(path) do
 		[account_name, repo_name] = String.split(path, "/")
-		[account_name, repo_name]
+		[account_name |> String.trim, repo_name |> String.trim]
 	end
 
 	def build_github_url([account_name, repo_name]) do
