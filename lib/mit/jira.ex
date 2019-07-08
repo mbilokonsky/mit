@@ -3,6 +3,10 @@ defmodule Mit.Jira do
 	@template_key "mit.jira.template"
 	@ticket_placeholder "@ticket@"
 
+	defp execute(options) do
+		System.cmd("git", options, stderr_to_stdout: true)
+	end
+
 	def get_jira_url() do
 		saved_url = get_saved_jira_url()
 		suggested_url = get_suggested_jira_url()
@@ -67,7 +71,7 @@ defmodule Mit.Jira do
 		errors = validate_template_string(str)
 
 		case errors do
-			[] -> System.cmd("git", ["config", "--local", "--add", @template_key, str])
+			[] -> execute(["config", "--local", "--add", @template_key, str])
 			[_h|_] -> IO.puts "Unable to set template URL due to the following errors:\n" <> Enum.join(errors, "\n")
 		end
 	end
@@ -104,7 +108,7 @@ defmodule Mit.Jira do
 	end
 
 	def get_jira_url_template do
-		system_output = System.cmd("git", ["config", "--local", "--get", @template_key], stderr_to_stdout: true)
+		system_output = execute(["config", "--local", "--get", @template_key])
 		case system_output do
 			{_, x} when x != 0 -> nil
 			{"error: invalid key:" <> _, _} -> nil
@@ -115,8 +119,11 @@ defmodule Mit.Jira do
 	end
 
 	def clean do
-		System.cmd("git", ["config", "--remove-section", ~r/mit\.jira?.*/])
-		:ok
+		command = "config"
+		subcommand = "--remove-section"
+		section_namespace = "#{~r/mit\.jira?.*/}"
+		{ result, _ } = execute([command, subcommand, section_namespace])
+		result |> String.trim
 	end
 
 	defp format_template(url) do
