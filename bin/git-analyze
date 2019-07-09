@@ -1,0 +1,22 @@
+command="mit analyze"
+debug=false
+while getopts ":da:s:u:l:" opt; do
+  case ${opt} in
+    d ) debug=true
+			;;
+		a ) command="$command -a $OPTARG"
+			;;
+		s ) command="$command -s $OPTARG"
+      ;;
+    u ) command="$command -u $OPTARG"
+      ;;
+		l ) command="$command -l $OPTARG"
+			;;
+  esac
+done
+
+if [ $debug == true ]; then
+  echo "Running command: $command"
+fi
+
+${command}
