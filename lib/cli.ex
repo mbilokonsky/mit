@@ -98,6 +98,30 @@ defmodule Mit.CLI do
 		end
 	end
 
+	command :analyze do
+		option :author, aliases: [:a], help: "Include only those commits written by the provided author", default: nil, required: false
+		option :since, aliases: [:s], help: "What date should we begin our analysis? DD-MM-YYYY", default: nil, required: false
+		option :until, aliases: [:u], help: "What date should we stop our analysis? DD-MM-YYYY", default: nil, required: false
+		option :last, aliases: [:l], help: "Tracks the last X days (you provide X as an argument). Ignores -s and -u.", required: false
+
+		run context do
+			data = if Map.has_key?(context, :last) do
+				days = context[:last]
+				params = if Map.has_key?(context, :author) do
+					%{since: "#{days} days ago", author: context[:author]}
+				else
+					%{since: "#{days} days ago"}
+				end
+
+				Mit.Analyze.analyze_repo(params)
+			else
+				Mit.Analyze.analyze_repo(context)
+			end
+			json = data |> Poison.encode!(pretty: true)
+			IO.puts json
+		end
+	end
+
 	defp green(str) do
 		IO.ANSI.green <> str <> IO.ANSI.default_color
 	end
