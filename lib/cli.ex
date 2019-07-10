@@ -82,6 +82,7 @@ defmodule Mit.CLI do
 		option :source_remote, default: "origin", required: true
 		option :target_branch, default: "master", required: true
 		option :target_remote, default: "upstream", required: true
+		option :include_stats, default: false, required: false
 
 		run context do
 			Mit.PR.create_new_pr(context)
@@ -99,24 +100,22 @@ defmodule Mit.CLI do
 	end
 
 	command :analyze do
+		option :diff, aliases: [:d], help: "Get stats for the diff against `master` by default or by the value you assign to `-d`. Overrides all other options.", required: false
+
 		option :author, aliases: [:a], help: "Include only those commits written by the provided author", default: nil, required: false
+		option :last, aliases: [:l], help: "Tracks the last X days (you provide X as an argument). Overrides --since and --until", required: false
 		option :since, aliases: [:s], help: "What date should we begin our analysis? DD-MM-YYYY", default: nil, required: false
 		option :until, aliases: [:u], help: "What date should we stop our analysis? DD-MM-YYYY", default: nil, required: false
-		option :last, aliases: [:l], help: "Tracks the last X days (you provide X as an argument). Ignores -s and -u.", required: false
 
 		run context do
-			data = if Map.has_key?(context, :last) do
-				days = context[:last]
-				params = if Map.has_key?(context, :author) do
-					%{since: "#{days} days ago", author: context[:author]}
-				else
-					%{since: "#{days} days ago"}
-				end
-
-				Mit.Analyze.analyze_repo(params)
-			else
-				Mit.Analyze.analyze_repo(context)
+			IO.inspect context
+			data = case context do
+				%{ diff: diff } -> Mit.Analyze.analyze_diff(diff)
+				%{ last: days, author: author } -> Mit.Analyze.analyze_repo(%{ since: "#{days} days ago", author: author })
+				%{ last: days } -> Mit.Analyze.analyze_repo(%{ since: "#{days} days ago" })
+				params -> Mit.Analyze.analyze_repo(params)
 			end
+
 			json = data |> Poison.encode!(pretty: true)
 			IO.puts json
 		end

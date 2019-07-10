@@ -1,7 +1,18 @@
 defmodule Mit.Analyze do
+	def analyze_diff, do: analyze_diff("master")
+	def analyze_diff(nil), do: analyze_diff("master")
+	def analyze_diff(against) do
+		files = Mit.History.changed_files_diff(against)
+		analyze_files(files)
+	end
+
 	def analyze_repo, do: analyze_repo(%{})
 	def analyze_repo(params) do
-		files = Mit.History.get_files_changed(params)
+		files = Mit.History.changed_files_repo(params)
+		analyze_files(files)
+	end
+
+	defp analyze_files(files) do
 		total_files_changed = Enum.count(files)
 
 		test_changes = files |> Enum.filter(fn filename -> is_test? filename end)

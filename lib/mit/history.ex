@@ -1,14 +1,16 @@
 defmodule Mit.History do
-	defmodule Filter do
-		defstruct user: nil, start_date: nil, end_date: nil
+	def changed_files_diff, do: changed_files_diff("master")
+	def changed_files_diff(target_reference) do
+		options = [ "--no-pager", "diff", "--name-only", target_reference]
+
+		execute(options)
+		|> String.split("\n")
+		|> Enum.filter(fn path -> path != "" end)
+		|> Enum.sort()
 	end
 
-	defmodule Report do
-		defstruct by_type: nil, by_test_vs_code: nil
-	end
-
-	def get_files_changed, do: get_files_changed(%{})
-	def get_files_changed(params) do
+	def changed_files_repo, do: changed_files_repo(%{})
+	def changed_files_repo(params) do
 		options = [ "--no-pager", "log", "--name-only"]
 
 		options = if Map.has_key? params, :author do
