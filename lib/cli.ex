@@ -82,7 +82,7 @@ defmodule Mit.CLI do
 		option :source_remote, default: "origin", required: true
 		option :target_branch, default: "master", required: true
 		option :target_remote, default: "upstream", required: true
-		option :include_stats, default: false, required: false
+		option :include_stats, default: false, type: :boolean, required: false
 
 		run context do
 			Mit.PR.create_new_pr(context)

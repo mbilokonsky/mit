@@ -16,8 +16,13 @@ defmodule Mit.PR do
 		}
 
 		if options[:include_stats] do
-			stats = Mit.Analyze.analyze_diff("#{pr.target_remote}/#{pr.target_branch}")
-			new_body = Enum.join([pr.body, stats], "\n\n")
+			stats = Mit.Analyze.analyze_diff("#{pr.target_remote}/#{pr.target_branch}") |> Poison.encode!(pretty: true)
+			stats = """
+			```
+			#{stats}
+			```
+			"""
+			new_body = Enum.join([pr.body, "\n", "Diff Analysis: ", stats], "\n")
 			Map.put(pr, :body, new_body)
 		else
 			pr
