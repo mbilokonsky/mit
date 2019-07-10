@@ -6,7 +6,7 @@ defmodule Mit.PR do
 	end
 
 	def create(options) do
-		%Mit.PR{
+		pr = %Mit.PR{
 			title: (options[:title] || "") |> String.trim,
 			body: (options[:body] || "") |> String.trim,
 			source_branch: (options[:source_branch] || Mit.get_branch())  |> String.trim,
@@ -14,6 +14,19 @@ defmodule Mit.PR do
 			target_remote: options[:target_remote] |> String.trim,
 			target_branch: options[:target_branch] |> String.trim
 		}
+
+		if options[:include_stats] do
+			stats = Mit.Analyze.analyze_diff("#{pr.target_remote}/#{pr.target_branch}") |> Poison.encode!(pretty: true)
+			stats = """
+			```
+			#{stats}
+			```
+			"""
+			new_body = Enum.join([pr.body, "\n", "Diff Analysis: ", stats], "\n")
+			Map.put(pr, :body, new_body)
+		else
+			pr
+		end
 	end
 
 	def build_url(pr) do

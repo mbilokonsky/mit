@@ -1,8 +1,10 @@
 command="mit analyze"
 debug=false
-while getopts ":da:s:u:l:" opt; do
+while getopts ":da:i:s:u:l:" opt; do
   case ${opt} in
     d ) debug=true
+			;;
+		i ) command="$command -d $OPTARG"
 			;;
 		a ) command="$command -a $OPTARG"
 			;;

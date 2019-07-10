@@ -67,7 +67,7 @@ defmodule Mit do
 	def sanitize_remote("git@github.com:" <> path), do: sanitize_remote(path)
 	def sanitize_remote(path) do
 		[account_name, repo_name] = String.split(path, "/")
-		[account_name |> String.trim, repo_name |> String.trim]
+		[account_name |> String.trim, repo_name |> String.replace(".git", "") |> String.trim]
 	end
 
 	def build_github_url([account_name, repo_name]) do

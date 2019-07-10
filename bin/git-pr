@@ -19,7 +19,9 @@ while getopts ":dc:t:r:b:s:n:" opt; do
   esac
 done
 
+command="$command --include_stats"
+
 if [ $debug == true ]; then
-  echo "Running command: $command $args"
+  echo "Running command: $command"
 fi
-${command} ${args}
+${command}
