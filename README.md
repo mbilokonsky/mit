@@ -86,3 +86,15 @@ If you'd like, you can try to install this manually. `./mit` is a compiled execu
 
 * `cp mit ~/bin` or some other location on your path
 * `cp bin/git-* ~/bin` or some other location on your path
+
+## TODO
+
+The scripting solution I'm using is clearly silly. Hand-rolling all of these options is not scalable, and I think what I'd ultimately like to do is just create multiple releases of this CLI suite where each top-level command becomes its own executable. `mit-open`, `mit-jira`, `mit-pr` etc. Then I'd alias them as `git-*` instead of `mit-*` in a folder that's on my path somewhere.
+
+`jira` should be expanded to `ticket` since there are other ticketing systems available.
+
+`Mit.Config` should be more broadly used to store config variables and sensible defaults for all of the various `mit` tools. Ideally it can auto-suggest almost every value it requires once it's been initially configured, and for many people it should just work out of the box.
+
+There should be more wizard-based workflows and less command-line options, maybe? But the options are easier to script. Hmm.
+
+I want to add `Mit.Report` - this would use `Mit.Analyze` but it'd run it against the set of repos associated with a given report name. So I could set up `mit report artsy` and it would look at my global git config and see that `mit.report.artsy` is a list of 7 repos and it should give me a summary report over all of them.
