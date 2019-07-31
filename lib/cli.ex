@@ -100,7 +100,7 @@ defmodule Mit.CLI do
 	end
 
 	command :analyze do
-		option :diff, aliases: [:d], help: "Get stats for the diff against `master` by default or by the value you assign to `-d`. Overrides all other options.", required: false
+		option :diff, aliases: [:d], default: "master", help: "Get stats for the diff against `master` by default or by the value you assign to `-d`. Overrides all other options.", required: false
 
 		option :author, aliases: [:a], help: "Include only those commits written by the provided author", default: nil, required: false
 		option :last, aliases: [:l], help: "Tracks the last X days (you provide X as an argument). Overrides --since and --until", required: false
